@@ -13,22 +13,15 @@ class MainViewController: UIViewController, AVCaptureVideoDataOutputSampleBuffer
     
     private let captureSession = AVCaptureSession()
     
+    private let videoOutput = AVCaptureVideoDataOutput()
+    
     private lazy var previewLayer: AVCaptureVideoPreviewLayer = {
         let preview = AVCaptureVideoPreviewLayer(session: self.captureSession)
         preview.videoGravity = .resizeAspect
         return preview
     }()
     
-    private func addPreviewLayer() {
-        self.view.layer.addSublayer(self.previewLayer)
-    }
-
-    private func addCameraInput() {
-        let captureDevice = AVCaptureDevice.default(for: .video)!
-        let cameraInput = try! AVCaptureDeviceInput(device: captureDevice)
-        captureSession.addInput(cameraInput)
-    }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -48,7 +41,18 @@ class MainViewController: UIViewController, AVCaptureVideoDataOutputSampleBuffer
         self.previewLayer.frame = self.view.bounds
     }
     
-    private let videoOutput = AVCaptureVideoDataOutput()
+    
+    private func addPreviewLayer() {
+        self.view.layer.addSublayer(self.previewLayer)
+    }
+    
+    
+    private func addCameraInput() {
+        let captureDevice = AVCaptureDevice.default(for: .video)!
+        let cameraInput = try! AVCaptureDeviceInput(device: captureDevice)
+        captureSession.addInput(cameraInput)
+    }
+    
     
     private func addVideoOutput() {
         self.videoOutput.videoSettings = [
@@ -59,7 +63,7 @@ class MainViewController: UIViewController, AVCaptureVideoDataOutputSampleBuffer
     }
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard let frame = CMSampleBufferGetImageBuffer(sampleBuffer)
+        guard CMSampleBufferGetImageBuffer(sampleBuffer) != nil
         else {
             debugPrint("Unable to get image from sample buffer")
             return
@@ -68,7 +72,7 @@ class MainViewController: UIViewController, AVCaptureVideoDataOutputSampleBuffer
         // process image here
         
     }
-
-
+    
+    
 }
 
